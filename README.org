@@ -1,0 +1,43 @@
+* Java Chat Server/Client Implementation
+** Description
+This project is a simple chat server/client written in Java using the low-level
+socket API.
+
+The chat will be a chatroom where a user can send a message to all of the other
+users in the chatroom.  
+
+** The Server
+We will have a class called ChatServer which we will be able to recieve 
+messages from a client. These messages will be received via the 
+~socket.listen()~ method. Now there are a few possibilities as for what 
+kind of message it could be:
+
+- A user is logging into the system.
+- A user is sending a message to all other users
+- A user is logging off of the system.
+
+The server will have a few methods that it can use to perform these tasks.
+
+- ~userLogOn(String userName)~ :: Will take a user name and add it to the list of 
+users that are currently logged into the system. Synonymous with the *subscribe* in
+*publish-subscribe*.
+- ~sendMessage(String fromUser)~ :: We will take a message from a user and send it
+to all the users logged onto the system. Synonymous with the *subsribe* in 
+*publish-subscribe*. At the moment, because this is just one chatroom we don't
+need a ~toUser~ in the method signature as an argument, but that can easily
+be added in later if needed, with minimal change.
+of users that are currently on the system.
+- ~userLogOff(String userName)~ :: Will take a user name and remove it from the list
+of users currently on the system. 
+
+** The Protocol
+Here is what the protocol will look like for messages sent *to* the server from a client.
+
+- LOGON|<UserName>
+- MESSAGE|<FromUser>|<MessageString>
+- LOGOFF|<UserName>
+
+Here is the protocol for messages sent *from* the server.
+
+- MESSAGE|<FromUser>|<MessageString>
+- ERROR|<ErrorMessage>
