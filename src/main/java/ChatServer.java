@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class ChatServer implements Runnable{
 
@@ -9,11 +10,14 @@ public class ChatServer implements Runnable{
     }
 
     public static void main(String[] args){
+
+        LinkedList<User> userList = new LinkedList<User>();
+
         try{
             ServerSocket listener = new ServerSocket(1337);
             while(true){
-                User newUser = new User(listener.accept());
-                newUser.run();
+                User newUser = new User(listener.accept(),userList);
+                new Thread(newUser).start();
             }
         } catch (IOException e){
             System.out.println(e);
