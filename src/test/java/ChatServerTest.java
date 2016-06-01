@@ -51,4 +51,29 @@ public class ChatServerTest {
             System.out.println(e);
         }
     }
+
+    @Test
+    public void testDupicateLogon(){
+        //Create a socket to send messages to the chat server
+        Socket clientOne;
+        Socket clientTwo;
+        try {
+            clientOne = new Socket("localhost",1337);
+            clientTwo = new Socket("localhost",1337);
+            //Obtain reader and writer for socket
+            BufferedReader inClientOne = new BufferedReader(new InputStreamReader(clientOne.getInputStream()));
+            PrintWriter outClientOne = new PrintWriter(clientOne.getOutputStream(), true);
+            BufferedReader inClientTwo = new BufferedReader(new InputStreamReader(clientTwo.getInputStream()));
+            PrintWriter outClientTwo = new PrintWriter(clientTwo.getOutputStream(), true);
+            //Attempt to log in twice with the same user name
+            outClientOne.println("LOGON|User2");
+            //String responseOne = inClientOne.readLine();
+            outClientTwo.println("LOGON|User2");
+            String responseTwo = inClientTwo.readLine();
+            //Error
+            assertEquals("ERROR|There is already a User2 in the chatroom.",responseTwo);
+        } catch (IOException e){
+            System.out.println(e);
+        }
+    }
 }

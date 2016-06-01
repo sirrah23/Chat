@@ -13,6 +13,7 @@ import java.util.*;
 public class ChatServer implements Runnable{
 
     LinkedList<User> userList = new LinkedList<User>();
+    Set<String> usernamesInUse = Collections.synchronizedSet(new HashSet<String>(20));
 
     /**
      * Used the run the chat server in its own thread.
@@ -42,6 +43,7 @@ public class ChatServer implements Runnable{
         synchronized(userList) {
             userList.add(newUser);
         }
+        usernamesInUse.add(username);
         try {
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
         out.println(username + " has joined the chat.");
@@ -60,6 +62,15 @@ public class ChatServer implements Runnable{
             }
             return;
         }
+    }
+
+    /**
+     * Checks to see if a given username is already
+     * being used by someone on the server.
+     * @param The username to be tested
+     */
+    public boolean usernameIsInUse(String username){
+        return usernamesInUse.contains(username);
     }
 
     /**
@@ -95,6 +106,13 @@ public class ChatServer implements Runnable{
                 }
 
                 String username = loginMessage.substring(loginMessage.indexOf('|')+1);
+
+                if(this.chatserver.usernameIsInUse(username)){
+                    out.println("ERROR|There is already a " + username + " in the chatroom.");
+                    this.clientSocket.close();
+                    return;
+                }
+
                 chatserver.userLogin(this.clientSocket, username);
                 return;
             } catch (IOException e){
