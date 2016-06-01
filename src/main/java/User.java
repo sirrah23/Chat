@@ -2,6 +2,12 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * This class contains the information for a user that is connected
+ * to the chat server. The class implements Runnable so that each user
+ * can run in its own thread. This will allow multiple users to send/recieve
+ * messages in the chatroom.
+ */
 public class User implements Runnable{
     private Socket userSocket;
     private BufferedReader in;
@@ -21,6 +27,11 @@ public class User implements Runnable{
         }
     }
 
+    /**
+     * Recieves messages from the client that should follow
+     * the chat server protocol. If the action the client
+     * wants performed is valid then we let the server know.
+     */
     public void run(){
         try {
             while(true){
