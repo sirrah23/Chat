@@ -36,6 +36,7 @@ public class User implements Runnable{
         try {
             while(true){
                 String clientActionMessage = in.readLine();
+                out.println("TODO");
             }
         } catch (IOException e){
             System.out.println(e);

@@ -52,6 +52,7 @@ public class ChatServer implements Runnable{
             synchronized(userList) {
                 userList.remove(newUser);
             }
+            usernamesInUse.remove(username);
             System.out.println(e);
             try {
                 clientSocket.close();

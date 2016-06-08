@@ -30,6 +30,7 @@ public class ChatServerTest {
             assertEquals("User1 has joined the chat.",response);
         } catch (IOException e){
             System.out.println(e);
+            fail();
         }
     }
 
@@ -49,6 +50,7 @@ public class ChatServerTest {
             assertEquals("ERROR|You are not logged in yet.",response);
         } catch (IOException e){
             System.out.println(e);
+            fail();
         }
     }
 
@@ -67,13 +69,74 @@ public class ChatServerTest {
             PrintWriter outClientTwo = new PrintWriter(clientTwo.getOutputStream(), true);
             //Attempt to log in twice with the same user name
             outClientOne.println("LOGON|User2");
-            //String responseOne = inClientOne.readLine();
+            String responseOne = inClientOne.readLine();
             outClientTwo.println("LOGON|User2");
             String responseTwo = inClientTwo.readLine();
             //Error
             assertEquals("ERROR|There is already a User2 in the chatroom.",responseTwo);
         } catch (IOException e){
             System.out.println(e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testServerLogoff(){
+        Socket client;
+        try {
+            //User will log on, and then log off
+            client = new Socket("localhost",1337);
+            //Obtain reader and writer for socket
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+            out.println("LOGON|User3");
+            in.readLine();
+            out.println("LOGOFF|User3");
+            String logoffSuccessMessage = in.readLine();
+            assertEquals("User3 has logged off successfully.",logoffSuccessMessage);
+        } catch (IOException e) {
+            System.out.println(e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testServerLogoffNotLoggedIn(){
+        Socket client;
+        try {
+            //User will log off
+            client = new Socket("localhost",1337);
+            //Obtain reader and writer for socket
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+            out.println("LOGOFF|User4");
+            String logoffFailMessage = in.readLine();
+            assertEquals("ERROR|You are not logged in yet.",logoffFailMessage);
+        } catch (IOException e) {
+            System.out.println(e);
+            fail();
+        }
+    }
+
+    @Test
+    public void testServerLogoffTwice(){
+        Socket client;
+        try {
+            //User will log off twice
+            client = new Socket("localhost",1337);
+            //Obtain reader and writer for socket
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+            out.println("LOGON|User5");
+            in.readLine();
+            out.println("LOGOFF|User5");
+            in.readLine();
+            out.println("LOGOFF|User5");
+            String logoffFailMessage = in.readLine();
+            assertEquals("ERROR|You are not logged in yet.",logoffFailMessage);
+        } catch (IOException e) {
+            System.out.println(e);
+            fail();
         }
     }
 }
