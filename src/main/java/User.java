@@ -28,6 +28,15 @@ public class User implements Runnable{
     }
 
     /**
+     * Will send a string to the user client.
+     *
+     * @param Message string
+     */
+    public void sendUserClientMessage(String message){
+        out.println(message);
+    }
+
+    /**
      * Recieves messages from the client that should follow
      * the chat server protocol. If the action the client
      * wants performed is valid then we let the server know.
@@ -36,10 +45,23 @@ public class User implements Runnable{
         try {
             while(true){
                 String clientActionMessage = in.readLine();
-                out.println("TODO");
+                if(clientActionMessage.startsWith("MESSAGE")){
+                    //TODO - broadcast message to server
+                } else if (clientActionMessage.startsWith("LOGOFF")){
+                    this.chatserver.userLogoff(this);
+                    break;
+                } else {
+                    //TODO - send some kind of "invalid action" message back
+                }
             }
+            this.userSocket.close();
+            return;
         } catch (IOException e){
             System.out.println(e);
         }
+    }
+
+    public String getUsername(){
+        return username;
     }
 }

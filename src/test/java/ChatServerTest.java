@@ -117,26 +117,4 @@ public class ChatServerTest {
             fail();
         }
     }
-
-    @Test
-    public void testServerLogoffTwice(){
-        Socket client;
-        try {
-            //User will log off twice
-            client = new Socket("localhost",1337);
-            //Obtain reader and writer for socket
-            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-            out.println("LOGON|User5");
-            in.readLine();
-            out.println("LOGOFF|User5");
-            in.readLine();
-            out.println("LOGOFF|User5");
-            String logoffFailMessage = in.readLine();
-            assertEquals("ERROR|You are not logged in yet.",logoffFailMessage);
-        } catch (IOException e) {
-            System.out.println(e);
-            fail();
-        }
-    }
 }

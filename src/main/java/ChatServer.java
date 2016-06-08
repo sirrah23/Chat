@@ -66,6 +66,26 @@ public class ChatServer implements Runnable{
     }
 
     /**
+     * Given a User object, will "log off" the
+     * user by removing them from the list of
+     * active users and notifying the user that
+     * their logoff was successful.
+     *
+     * Assume this method will not be called by
+     * a user that is not already logged in.
+     *
+     * @param User object
+     */
+    public void userLogoff(User user){
+        synchronized(this.userList) {
+            this.userList.remove(user);
+        }
+        usernamesInUse.remove(user.getUsername());
+        user.sendUserClientMessage(user.getUsername() + " has logged off successfully.");
+        return;
+    }
+
+    /**
      * Checks to see if a given username is already
      * being used by someone on the server.
      * @param The username to be tested
