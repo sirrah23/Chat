@@ -46,7 +46,7 @@ public class User implements Runnable{
             while(true){
                 String clientActionMessage = in.readLine();
                 if(clientActionMessage.startsWith("MESSAGE")){
-                    //TODO - broadcast message to server
+                    this.chatserver.propogateMessage(clientActionMessage);
                 } else if (clientActionMessage.startsWith("LOGOFF")){
                     this.chatserver.userLogoff(this);
                     break;

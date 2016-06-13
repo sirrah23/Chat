@@ -14,20 +14,36 @@ public class ChatServer implements Runnable{
 
     LinkedList<User> userList = new LinkedList<User>();
     Set<String> usernamesInUse = Collections.synchronizedSet(new HashSet<String>(20));
+    private volatile Boolean running = true;
+
+    /**
+     * Used to stop the chat server
+     */
+    public void stopChatServer() {
+        running = false;
+    }
 
     /**
      * Used the run the chat server in its own thread.
      */
     public void run(){
-        try{
-            //TODO Get rid of the hardcode on the port #
-            ServerSocket listener = new ServerSocket(1337);
-            while(true){
-                ChatServer.Handler userHandler = new ChatServer.Handler(listener.accept(), this);
-                new Thread(userHandler).start();
-            }
+        ServerSocket listener;
+
+        try {
+            listener = new ServerSocket(1337);
         } catch (IOException e){
             System.out.println(e);
+            return;
+        }
+
+        while(running){
+            try{
+                //TODO Get rid of the hardcode on the port #
+                ChatServer.Handler userHandler = new ChatServer.Handler(listener.accept(), this);
+                new Thread(userHandler).start();
+            } catch (IOException e){
+                System.out.println(e);
+            }
         }
     }
 
@@ -83,6 +99,18 @@ public class ChatServer implements Runnable{
         usernamesInUse.remove(user.getUsername());
         user.sendUserClientMessage(user.getUsername() + " has logged off successfully.");
         return;
+    }
+
+    /**
+     * Given a message, will send it to every user
+     * that is currently logged in.
+     *
+     * @param Message string
+     */
+    public void propogateMessage(String message){
+        for(User u : userList ) {
+            u.sendUserClientMessage(message);
+        }
     }
 
     /**

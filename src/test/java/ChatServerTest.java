@@ -6,11 +6,14 @@ import java.io.*;
 
 public class ChatServerTest {
 
+    static ChatServer cs;
+
     @BeforeClass
     public static void initialize(){
         // Create the chat server
-        ChatServer cs = new ChatServer();
-        new Thread(cs).start();
+        cs = new ChatServer();
+        Thread serverThread = new Thread(cs);
+        serverThread.start();
     }
 
 
@@ -133,18 +136,23 @@ public class ChatServerTest {
             BufferedReader inB = new BufferedReader(new InputStreamReader(clientB.getInputStream()));
             PrintWriter outB = new PrintWriter(clientB.getOutputStream(), true);
 
-            outA.println("LOGIN|User5");
+            outA.println("LOGON|User5");
             inA.readLine();
-            outB.println("LOGIN|User6");
+            outB.println("LOGON|User6");
             inB.readLine();
 
             outA.println("MESSAGE|User5|HIYA!");
             String messageFromA = inB.readLine();
 
-            assertEquals("HIYA!",messageFromA);
+            assertEquals("MESSAGE|User5|HIYA!",messageFromA);
         } catch (IOException e) {
             System.out.println(e);
             fail();
         }
+    }
+
+    @AfterClass
+    public static void endServer(){
+        cs.stopChatServer();
     }
 }
