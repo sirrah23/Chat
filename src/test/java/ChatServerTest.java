@@ -117,4 +117,34 @@ public class ChatServerTest {
             fail();
         }
     }
+
+    @Test
+    public void testServerPropogateMessage(){
+        Socket clientA;
+        Socket clientB;
+
+        try {
+
+            clientA = new Socket("localhost",1337);
+            clientB = new Socket("localhost",1337);
+
+            BufferedReader inA = new BufferedReader(new InputStreamReader(clientA.getInputStream()));
+            PrintWriter outA = new PrintWriter(clientA.getOutputStream(), true);
+            BufferedReader inB = new BufferedReader(new InputStreamReader(clientB.getInputStream()));
+            PrintWriter outB = new PrintWriter(clientB.getOutputStream(), true);
+
+            outA.println("LOGIN|User5");
+            inA.readLine();
+            outB.println("LOGIN|User6");
+            inB.readLine();
+
+            outA.println("MESSAGE|User5|HIYA!");
+            String messageFromA = inB.readLine();
+
+            assertEquals("HIYA!",messageFromA);
+        } catch (IOException e) {
+            System.out.println(e);
+            fail();
+        }
+    }
 }

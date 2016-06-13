@@ -51,7 +51,7 @@ public class User implements Runnable{
                     this.chatserver.userLogoff(this);
                     break;
                 } else {
-                    //TODO - send some kind of "invalid action" message back
+                    this.out.println("Invalid action");
                 }
             }
             this.userSocket.close();
