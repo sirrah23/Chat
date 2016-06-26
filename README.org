@@ -39,5 +39,7 @@ Here is what the protocol will look like for messages sent *to* the server from 
 
 Here is the protocol for messages sent *from* the server.
 
+- LOGON|SUCCESS|<Username>
+- LOGOFF|SUCCESS|<Username>
 - MESSAGE|<FromUser>|<MessageString>
 - ERROR|<ErrorMessage>
