@@ -16,6 +16,12 @@ public class ChatServer implements Runnable{
     Set<String> usernamesInUse = Collections.synchronizedSet(new HashSet<String>(20));
     private volatile Boolean running = true;
 
+    public static void main(String[] args){
+        ChatServer cs = new ChatServer();
+        Thread serverThread = new Thread(cs);
+        serverThread.start();
+    }
+
     /**
      * Used to stop the chat server
      */
@@ -61,9 +67,9 @@ public class ChatServer implements Runnable{
         }
         usernamesInUse.add(username);
         try {
-        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-        out.println(username + " has joined the chat.");
-        new Thread(newUser).start();
+        	PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);        	
+        	out.println("LOGON|SUCCESS|"+username);
+        	new Thread(newUser).start();
         } catch (IOException e){
             synchronized(userList) {
                 userList.remove(newUser);
@@ -97,7 +103,7 @@ public class ChatServer implements Runnable{
             this.userList.remove(user);
         }
         usernamesInUse.remove(user.getUsername());
-        user.sendUserClientMessage(user.getUsername() + " has logged off successfully.");
+        user.sendUserClientMessage("LOGOFF|SUCCESS|" + user.getUsername());
         return;
     }
 

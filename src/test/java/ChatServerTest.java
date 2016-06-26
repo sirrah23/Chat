@@ -30,7 +30,7 @@ public class ChatServerTest {
             out.println("LOGON|User1");
             String response = in.readLine();
             //See that the user was logged on
-            assertEquals("User1 has joined the chat.",response);
+            assertEquals("LOGON|SUCCESS|User1",response);
         } catch (IOException e){
             System.out.println(e);
             fail();
@@ -96,7 +96,7 @@ public class ChatServerTest {
             in.readLine();
             out.println("LOGOFF|User3");
             String logoffSuccessMessage = in.readLine();
-            assertEquals("User3 has logged off successfully.",logoffSuccessMessage);
+            assertEquals("LOGOFF|SUCCESS|User3",logoffSuccessMessage);
         } catch (IOException e) {
             System.out.println(e);
             fail();
